@@ -1,14 +1,12 @@
 
 import numpy as np
 import streamlit as st
-from sklearn.metrics import mean_squared_error, mean_absolute_error
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import recall_score
-from sklearn.metrics import precision_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, accuracy_score, recall_score, precision_score,classification_report
 from sklearn.tree import DecisionTreeRegressor,DecisionTreeClassifier
 from sklearn.ensemble import RandomForestRegressor,RandomForestClassifier
 from sklearn.neighbors import KNeighborsRegressor,KNeighborsClassifier
 from sklearn.svm import SVR, SVC
+from sklearn.model_selection import GridSearchCV
 
 
 def evaluate_model_reg(actual, pred):
@@ -97,6 +95,7 @@ def train_opt_class(X_train,y_train,X_test,mod):
         return pred
 
 def train_opt_reg(X_train,y_train,X_test,mod):
+
     
     if mod=="DecisionTree":
         ctriterion= st.selectbox("Select criterion:", ['absolute_error', 'squared_error', 'poisson', 'friedman_mse'])
@@ -140,3 +139,155 @@ def train_opt_reg(X_train,y_train,X_test,mod):
         model.fit(X_train, y_train)
         pred=model.predict(X_test)
         return pred
+    
+def opt_class(X_train,y_train,X_test,mod):
+    
+    if mod=="DecisionTree":
+        param_grid = {
+            'criterion': ['gini', 'entropy'],
+            'max_depth': range(1, 30,2),
+            'min_samples_split': range(1, 25,2),
+            'min_samples_leaf': range(1, 15,2),
+            'max_features': [None, 'auto', 'sqrt', 'log2']
+        }
+
+        model = DecisionTreeClassifier()
+
+        grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1, scoring='accuracy')
+        grid_search.fit(X_train, y_train)
+
+        st.write(grid_search.best_params_)
+
+        best_model = grid_search.best_estimator_
+        pred = best_model.predict(X_test)
+    elif mod=="RandomForest":
+        param_grid = {
+            'n_estimators': range(1, 100,4),
+            'criterion': ['gini', 'entropy'],
+            'max_depth': range(1, 30,2),
+            'min_samples_split': range(1, 30,2),
+            'min_samples_leaf': range(1, 15,2),
+            'max_features': ['auto', 'sqrt', 'log2']
+        }
+
+        model = RandomForestClassifier()
+
+        grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1, scoring='accuracy')
+        grid_search.fit(X_train, y_train)
+        st.write(grid_search.best_params_)
+
+        best_model = grid_search.best_estimator_
+        pred = best_model.predict(X_test)
+    elif mod=="KNN":
+        param_grid = {
+            'n_neighbors': range(1, 15,2),
+            'weights': ['uniform', 'distance'],
+            'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
+            'leaf_size': range(1, 50,4),
+            'p': [1, 2]
+        }
+
+        model = KNeighborsClassifier()
+
+        grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1, scoring='accuracy')
+        grid_search.fit(X_train, y_train)
+        st.write(grid_search.best_params_)
+
+        best_model = grid_search.best_estimator_
+        pred = best_model.predict(X_test)
+    else:
+        param_grid = {
+            'C': [0.1, 1, 10, 100],
+            'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
+            'gamma': ['scale', 'auto'],
+            'degree': range(2, 5),
+            'coef0': [0.0, 0.1, 0.5, 1.0]
+        }
+
+        model = SVC()
+
+        grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1, scoring='accuracy')
+        grid_search.fit(X_train, y_train)
+
+        st.write(grid_search.best_params_)
+
+        best_model = grid_search.best_estimator_
+        pred = best_model.predict(X_test)
+    return pred
+    
+def opt_reg(X_train,y_train,X_test,mod):
+    
+    if mod=="DecisionTree":
+        param_grid = {
+            'criterion': ['mse', 'friedman_mse', 'mae'],
+            'max_depth': range(1, 30,2),
+            'min_samples_split': range(1, 25,2),
+            'min_samples_leaf': range(1, 15,2),
+            'max_features': [None, 'auto', 'sqrt', 'log2']
+        }
+
+        model = DecisionTreeRegressor()
+
+        grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1, scoring='neg_mean_squared_error')
+        grid_search.fit(X_train, y_train)
+
+        st.write(grid_search.best_params_)
+
+        best_model = grid_search.best_estimator_
+        pred = best_model.predict(X_test)
+    elif mod=="RandomForest":
+        param_grid = {
+            'n_estimators': range(1, 100,4),
+            'criterion': ['mse', 'mae'],
+            'max_depth': range(1, 30,2),
+            'min_samples_split': range(1, 30,2),
+            'min_samples_leaf': range(1,15,2),
+            'max_features': [None, 'auto', 'sqrt', 'log2']
+        }
+
+        model = RandomForestRegressor()
+
+        grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1, scoring='neg_mean_squared_error')
+        grid_search.fit(X_train, y_train)
+
+        st.write(grid_search.best_params_)
+
+        best_model = grid_search.best_estimator_
+        pred = best_model.predict(X_test)
+    elif mod=="KNN":
+        param_grid = {
+            'n_neighbors': range(1, 10,2),
+            'weights': ['uniform', 'distance'],
+            'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
+            'leaf_size': range(1, 50,4),
+            'p': [1, 2]
+        }
+
+        model = KNeighborsRegressor()
+
+        grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1, scoring='neg_mean_squared_error')
+        grid_search.fit(X_train, y_train)
+
+        st.write(grid_search.best_params_)
+
+        best_model = grid_search.best_estimator_
+        pred = best_model.predict(X_test)
+    else:
+        param_grid = {
+            'C': [0.1, 1, 10, 100],
+            'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
+            'gamma': ['scale', 'auto'],
+            'degree': range(2, 5),
+            'coef0': [0.0, 0.1, 0.5, 1.0]
+        }
+
+        model = SVR()
+
+        grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1, scoring='neg_mean_squared_error')
+        grid_search.fit(X_train, y_train)
+
+        st.write(grid_search.best_params_)
+
+        best_model = grid_search.best_estimator_
+        pred = best_model.predict(X_test)
+    return pred

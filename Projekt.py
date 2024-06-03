@@ -8,9 +8,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
 import time
-import functions as f
+from functions import *
 
 
+st.markdown("<h1 style='text-align: center;'>Model creator</h1>", unsafe_allow_html=True)
 
 #icon_image = Image.open("xdd.webp")
 
@@ -18,13 +19,12 @@ import functions as f
 #     page_title="Model creator",
 #     page_icon=icon_image,
 # )
-st.title("Model creator")
 with st.sidebar:
     selected_option = option_menu("Main Menu", ["Choose an option","Add data", "See data","Train model"], default_index=0)
 
 if selected_option == "Choose an option":
     
-    st.write("Welcome")
+    st.markdown("<h2 style='text-align: center;'>Welcome</h2>", unsafe_allow_html=True)
 elif selected_option =="Add data":
     input_file = st.file_uploader("Upload a CSV file", type="csv", accept_multiple_files=False)
     if input_file is not None:
@@ -38,8 +38,8 @@ elif selected_option =="See data":
     if os.path.exists("things/df.csv"):
         df = pd.read_csv("things/df.csv")
         col1,col2 = st.columns(2)
-        tab_titles = ['Variable types', 'Basic statistics', 'Correlation','Plots']
-        tab1, tab2, tab3,tab4 = st.tabs(tab_titles)
+        tab_titles = ['Variable types', 'Basic statistics', 'Correlation','Plots', 'Delete column']
+        tab1, tab2, tab3,tab4,tab5 = st.tabs(tab_titles)
         with tab1:
             st.table(df.dtypes)
         with tab2:
@@ -117,12 +117,17 @@ elif selected_option =="See data":
                 st.info("Too many columns selected")
             else:
                 st.write("")
-    else:
-        st.info("Add your data")
+        with tab5:
+            col=st.selectbox("Select column:",df.columns)
+            df=df.drop(col,axis=1)
+            if st.button("Confirm"):
+                st.info("...")
+                df.to_csv("things/df.csv", index=False)
+                st.info("Done")
 elif selected_option =="Train model":
     if os.path.exists("things/df.csv"):
-        tab_titles=["Compare entry-level models","Train model"]
-        tab1, tab2 = st.tabs(tab_titles)
+        tab_titles=["Compare entry-level models","Train model","Optimize the model"]
+        tab1, tab2, tab3 = st.tabs(tab_titles)
         df = pd.read_csv("things/df.csv")
         
         with tab1:
@@ -139,22 +144,21 @@ elif selected_option =="Train model":
                 if y.dtype in ['int64', 'float64']:
                     t=pd.DataFrame(index=["mse","rmse","mae"])
                     for i in mod:
-                        pred = f.train_reg(X_train,y_train,X_test,i)
-                        mse,rmse,mae= f.evaluate_model_reg(y_test,pred)
+                        pred =train_reg(X_train,y_train,X_test,i)
+                        mse,rmse,mae=evaluate_model_reg(y_test,pred)
                         t[i]=[mse,rmse,mae]
 
                 else:
                     t=pd.DataFrame(index=["acc", "sensitivity","specificity"])
                     for i in models:
-                        pred = f.train_class(X_train,y_train,X_test,i)
-                        acc, sensitivity,specificity= f.evaluate_model_class(y_test,pred)
+                        pred =train_class(X_train,y_train,X_test,i)
+                        acc, sensitivity,specificity=evaluate_model_class(y_test,pred)
                         t[i]=[acc, sensitivity,specificity]
                 st.table(t)
                 end_time = time.time()
                 training_time_seconds = end_time - start_time
 
                 st.write("Training time:", training_time_seconds, "seconds")
-
         with tab2:
             
             ycol=st.selectbox("Select Y:",df.columns,key="key2")
@@ -162,24 +166,53 @@ elif selected_option =="Train model":
             X=df.drop(ycol,axis=1)
             X_dummies = pd.get_dummies(X)
             models=["DecisionTree","RandomForest","KNN","SVM"]
-            mod=st.selectbox("Select model:", models)
+            mod=st.selectbox("Select model:", models,key="key112")
             lentest=st.select_slider("What part of the set should be the test set?",range(1, 100),20,key="key21")
             X_train, X_test, y_train, y_test = train_test_split(X_dummies, y, test_size=lentest,random_state = 2115)
             if y.dtype in ['int64', 'float64']:
-                pred = f.train_opt_reg(X_train,y_train,X_test,mod)
+                pred =train_opt_reg(X_train,y_train,X_test,mod)
                 if pred is not None:
-                    mse,rmse,mae= f.evaluate_model_reg(y_test,pred)
+                    mse,rmse,mae=evaluate_model_reg(y_test,pred)
                     st.write("MSE:",mse)
                     st.write("RMSE:",rmse)
                     st.write("MAE:",mae)
             else: 
-                pred = f.train_opt_class(X_train,y_train,X_test,mod)
+                pred =train_opt_class(X_train,y_train,X_test,mod)
                 if pred is not None:
-                    acc, sensitivity,specificity= f.evaluate_model_class(y_test,pred)
+                    acc, sensitivity,specificity=evaluate_model_class(y_test,pred)
                     st.write("Accuracy:",acc)
                     st.write("Sensiticity:",sensitivity)
                     st.write("Specificity:",specificity)
+        with tab3:
+            ycol=st.selectbox("Select Y:",df.columns,key="key3")
+            y=df[ycol]
+            X=df.drop(ycol,axis=1)
+            X_dummies = pd.get_dummies(X)
+            st.write(y.dtype)
+            models=["DecisionTree","RandomForest","KNN","SVM"]
+            mod=st.selectbox("Select model:", models,key="key113")
+            lentest=st.select_slider("What part of the set should be the test set?",range(1, 100),20,key="key31")
+            X_train, X_test, y_train, y_test = train_test_split(X_dummies, y, test_size=lentest,random_state = 2115)
+            if st.button("Confirm"):
+                start_time = time.time()
+                if y.dtype in ['int64', 'float64']:
+                    pred =opt_reg(X_train,y_train,X_test,mod)
+                    if pred is not None:
+                        mse,rmse,mae=evaluate_model_reg(y_test,pred)
+                        st.write("MSE:",mse)
+                        st.write("RMSE:",rmse)
+                        st.write("MAE:",mae)
+                else: 
+                    pred =opt_class(X_train,y_train,X_test,mod)
+                    if pred is not None:
+                        acc, sensitivity,specificity=evaluate_model_class(y_test,pred)
+                        st.write("Accuracy:",acc)
+                        st.write("Sensiticity:",sensitivity)
+                        st.write("Specificity:",specificity)
+                end_time = time.time()
+                training_time_seconds = end_time - start_time
 
+                st.write("Training time:", training_time_seconds, "seconds")
     else:
         st.info("Add your data")
     
