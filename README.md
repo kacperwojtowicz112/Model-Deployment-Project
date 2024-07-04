@@ -25,49 +25,49 @@ Gdy wszystko przebiegnie pomyślnie powinno wyglądać tak jak na zdjęciu poni�
 
 Zakładka *Your data* podzielona jest na 5 kart.
 
-##### Variable types
+#### Variable types
 
 Mamy możliwość ujżenia dostępnych zmiennych oraz sprawdzenia ich typów.
 
 ![](things/Types.png)
 
-##### Basic statistics
+#### Basic statistics
 
 Dzięki tej karcie poznajemy podstawowe statystyki każdej ze zmiennych numerycznych.
 
 ![](things/Stat.png)
 
-##### Correlation 
+#### Correlation 
 
 Poznajemy zależności pomiędzy zmiennymi.
 
 ![](things/Corr.png)
 
-##### Plots
+#### Plots
 
 Wybieramy zmienne na podstawie których otrzymujemy wykres. W zależności od tego ile zmiennych wybierzemy oraz jakiego typu będą otrzymamy inny wykres.
 
-###### Jedna zmienna
+##### Jedna zmienna
 
 ![](things/One.png)
 
-###### Dwie zmienne - numeryczne
+##### Dwie zmienne - numeryczne
 
 ![](things/Twonum.png)
 
-###### Dwie zmienne - różne
+##### Dwie zmienne - różne
 
 ![](things/Twodiff.png)
 
-###### Dwie zmienne - kategoryczne
+##### Dwie zmienne - kategoryczne
 
 Otrzymujemy tabelę z liczebnością każdej z kombinacji.
 
-###### Trzy lub więcej
+##### Trzy lub więcej
 
 ![](things/Three.png)
 
-##### Delete column
+#### Delete column
 
 Mamy możliwość usunięcia kolumny z ramki danych.
 
@@ -75,7 +75,7 @@ Mamy możliwość usunięcia kolumny z ramki danych.
 
 Zakładka podzielona jest na 3 karty.
 
-##### Compare entry-level models
+#### Compare entry-level models
 
 Mamy możliwość zbudowania wybranych podstawowych modeli. Do wyboru mamy 4 modele:
 - Drzewo decyzyjne
@@ -102,7 +102,7 @@ Kategoryczna:
 - Sensitivity
 - Specificity
 
-##### Train your model
+#### Train your model
 
 Mamy mozliwość wytrenowania wybranego modelu na własnych zasadach. Tak jak poprezednio wybieramy model, zmienną zależną oraz część zbioru testowego. Po wyborze modelu dostajemy zestaw parametrów które możemy dostrajać według właśnych życzeń. Po zatwierdzeniu wyboru przyciskiem **Submit** dostajemy miery dopasowania dla wybranego zestawu.
 
@@ -110,7 +110,7 @@ Mamy mozliwość wytrenowania wybranego modelu na własnych zasadach. Tak jak po
 
 Tak jak poprzednio dla różnych typów są różne zestawy mier dopasowania.
 
-##### Optimize the model
+#### Optimize the model
 
 Mamy możliwość wytrenowania modelu wykorzystując optymalizację hiperparametrów. Ponownie wybieramy model, zmienną zależną oraz część zbioru testowego. Po potwierdzeniu wyboru oraz odczekaniu chwili otrzymujemy:
 - Zestaw najlepszych parametórw
