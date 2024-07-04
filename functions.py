@@ -85,7 +85,7 @@ def train_opt_class(X_train,y_train,X_test,mod):
             algorithm=algorithm, 
             leaf_size=leaf_size)
     else:
-        c=st.select_slider("Select c:",range(0, 5,0.2),5)
+        c=st.selectbox("Select c:",[0.1, 1, 10, 100])
         kernel=st.selectbox("Select kernel:", ['linear', 'poly','rbf','sigmoid'])
         degree=st.select_slider("Select degree:",range(1, 10),3)
         model = SVC(C=c,kernel=kernel,degree=degree)
@@ -139,6 +139,7 @@ def train_opt_reg(X_train,y_train,X_test,mod):
         model.fit(X_train, y_train)
         pred=model.predict(X_test)
         return pred
+    
     
 def opt_class(X_train,y_train,X_test,mod):
     
@@ -291,3 +292,4 @@ def opt_reg(X_train,y_train,X_test,mod):
         best_model = grid_search.best_estimator_
         pred = best_model.predict(X_test)
     return pred
+

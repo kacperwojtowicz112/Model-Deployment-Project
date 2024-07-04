@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-from PIL import Image
 from streamlit_option_menu import option_menu
 import os
 import matplotlib.pyplot as plt
@@ -13,19 +12,11 @@ from functions import *
 
 st.markdown("<h1 style='text-align: center;'>Model creator</h1>", unsafe_allow_html=True)
 
-#icon_image = Image.open("xdd.webp")
 
-# st.set_page_config(
-#     page_title="Model creator",
-#     page_icon=icon_image,
-# )
 with st.sidebar:
-    selected_option = option_menu("Main Menu", ["Choose an option","Add data", "See data","Train model"], default_index=0)
+    selected_option = option_menu("Main Menu", ["Add data", "Your data","Train model"], default_index=0)
 
-if selected_option == "Choose an option":
-    
-    st.markdown("<h2 style='text-align: center;'>Welcome</h2>", unsafe_allow_html=True)
-elif selected_option =="Add data":
+if selected_option =="Add data":
     input_file = st.file_uploader("Upload a CSV file", type="csv", accept_multiple_files=False)
     if input_file is not None:
         st.info("Success")
@@ -34,7 +25,7 @@ elif selected_option =="Add data":
             df = pd.read_csv(input_file)
             df.to_csv("things/df.csv", index=False)
             st.info("Done")
-elif selected_option =="See data":
+elif selected_option =="Your data":
     if os.path.exists("things/df.csv"):
         df = pd.read_csv("things/df.csv")
         col1,col2 = st.columns(2)
@@ -126,7 +117,7 @@ elif selected_option =="See data":
                 st.info("Done")
 elif selected_option =="Train model":
     if os.path.exists("things/df.csv"):
-        tab_titles=["Compare entry-level models","Train model","Optimize the model"]
+        tab_titles=["Compare entry-level models","Train your model","Optimize the model"]
         tab1, tab2, tab3 = st.tabs(tab_titles)
         df = pd.read_csv("things/df.csv")
         
@@ -160,29 +151,33 @@ elif selected_option =="Train model":
 
                 st.write("Training time:", training_time_seconds, "seconds")
         with tab2:
-            
-            ycol=st.selectbox("Select Y:",df.columns,key="key2")
-            y=df[ycol]
-            X=df.drop(ycol,axis=1)
-            X_dummies = pd.get_dummies(X)
-            models=["DecisionTree","RandomForest","KNN","SVM"]
-            mod=st.selectbox("Select model:", models,key="key112")
-            lentest=st.select_slider("What part of the set should be the test set?",range(1, 100),20,key="key21")
-            X_train, X_test, y_train, y_test = train_test_split(X_dummies, y, test_size=lentest,random_state = 2115)
-            if y.dtype in ['int64', 'float64']:
-                pred =train_opt_reg(X_train,y_train,X_test,mod)
-                if pred is not None:
+            col1,col2=st.columns(2)
+            with col1:
+                ycol=st.selectbox("Select Y:",df.columns,key="key2")
+                y=df[ycol]
+                X=df.drop(ycol,axis=1)
+                X_dummies = pd.get_dummies(X)
+                models=["DecisionTree","RandomForest","KNN","SVM"]
+                mod=st.selectbox("Select model:", models,key="key112")
+                lentest=st.select_slider("What part of the set should be the test set?",range(1, 100),20,key="key21")
+                X_train, X_test, y_train, y_test = train_test_split(X_dummies, y, test_size=lentest,random_state = 2115)
+            with col2:
+                if y.dtype in ['int64', 'float64']:
+                    pred= train_opt_reg(X_train,y_train,X_test,mod)
+                else: 
+                    pred= train_opt_class(X_train,y_train,X_test,mod)
+            if pred is not None:
+                if y.dtype in ['int64', 'float64']:
                     mse,rmse,mae=evaluate_model_reg(y_test,pred)
                     st.write("MSE:",mse)
                     st.write("RMSE:",rmse)
                     st.write("MAE:",mae)
-            else: 
-                pred =train_opt_class(X_train,y_train,X_test,mod)
-                if pred is not None:
+                else: 
                     acc, sensitivity,specificity=evaluate_model_class(y_test,pred)
                     st.write("Accuracy:",acc)
                     st.write("Sensiticity:",sensitivity)
                     st.write("Specificity:",specificity)
+                
         with tab3:
             ycol=st.selectbox("Select Y:",df.columns,key="key3")
             y=df[ycol]
