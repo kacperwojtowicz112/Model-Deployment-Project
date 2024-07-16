@@ -117,6 +117,42 @@ Mamy możliwość wytrenowania modelu wykorzystując optymalizację hiperparamet
 - Zestaw miar dopasowania
 - Czas przeszukiwania oraz uczenia modelu
 
+## Wdrożenie
+
+Aby uruchomić aplikację Streamlit lokalnie, wykonaj poniższe kroki:
+
+1. **Klonowanie repozytorium:**
+   Najpierw sklonuj repozytorium z kodem aplikacji. Otwórz terminal i wykonaj następujące polecenie:
+
+   ```sh
+   git clone https://github.com/kacperwojtowicz112/Model-Deployment-Project.git
+   cd nazwa-repozytorium
+
+2. **Tworzenie środowiska:**
+    ```sh
+    python -m venv venv
+
+### Aktywuj wirtualne środowisko:
+
+- Na systemie Windows:
+
+    ```sh
+    .\venv\Scripts\activate
+
+- Na systemie MacOS/Linux:
+
+    ```sh
+    source venv/bin/activate
+
+3. **Instalacja pakietów:**
+    ```sh
+    pip install -r requirements.txt
+
+4. **Uruchomienie aplikacji:**
+    ```sh
+    streamlit run Projekt.py
+
+
 ## Wymagania
 - python: 3.11.7
 - pandas: 1.5.3
