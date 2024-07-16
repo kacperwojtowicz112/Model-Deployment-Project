@@ -12,7 +12,7 @@ Aplikacja składa się z trzech zakładek:
 ![](things/Menu.png)
 
 ### Add data
-Zakładka *Add data* wykorzystanie wybranych danych podczas korzystania z aplikacji. 
+Zakładka *Add data* umożliwia wykorzystanie wybranych danych podczas korzystania z aplikacji. 
 Wystarczy użyć przcisku **Browse files** a następnie wybrać plik z rozszerzeniem csv oraz kliknąć przysić **Upload**.
 
 ![](things/Add_data.png)
