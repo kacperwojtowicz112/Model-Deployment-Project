@@ -128,11 +128,9 @@ Aby uruchomić aplikację Streamlit lokalnie, wykonaj poniższe kroki:
    git clone https://github.com/kacperwojtowicz112/Model-Deployment-Project.git
    cd nazwa-repozytorium
 
-2. **Tworzenie środowiska:**
+2. **Tworzenie oraz aktywacja środowiska:**
     ```sh
     python -m venv venv
-
-### Aktywuj wirtualne środowisko:
 
 - Na systemie Windows:
 
